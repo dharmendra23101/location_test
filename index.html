@@ -49,7 +49,7 @@
                 console.log(latitude)
                 console.log(longitude)
                 try {
-                    const response = await fetch('http://localhost:5000/api/location', {
+                    const response = await fetch('https://location-backend-mr4y0mkos-dhruws-projects.vercel.app/api/location', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ latitude, longitude })
