@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display Location</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #location-info {
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html">HOME</a>
+    <h1>Latest Saved Location</h1>
+    <div id="location-info">Loading...</div>
+
+    <script>
+        async function fetchLocation() {
+            const locationInfoDiv = document.getElementById('location-info');
+            try {
+                const response = await fetch('https://location-backend-mr4y0mkos-dhruws-projects.vercel.app/api/location');
+                if (!response.ok) throw new Error("Failed to retrieve location.");
+
+                const locationData = await response.json();
+                if (locationData) {
+                    locationInfoDiv.innerHTML = `
+                        <strong>Latitude:</strong> ${locationData.latitude}<br>
+                        <strong>Longitude:</strong> ${locationData.longitude}<br>
+                        <strong>Timestamp:</strong> ${new Date(locationData.timestamp).toLocaleString()}
+                    `;
+                } else {
+                    locationInfoDiv.innerText = "No location data available.";
+                }
+            } catch (error) {
+                locationInfoDiv.innerText = "Error loading location data. Please try again.";
+                console.error(error);
+            }
+        }
+
+        // Call the function when the page loads
+        fetchLocation();
+    </script>
+</body>
+</html>
