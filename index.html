@@ -1,0 +1,72 @@
+<!-- location-capture.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capture Location</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #status {
+            margin-top: 20px;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>Capture Location</h1>
+    <button onclick="saveLocation()">Save My Location</button>
+    <div id="status"></div>
+
+    <script>
+        async function saveLocation() {
+            const statusDiv = document.getElementById('status');
+            statusDiv.innerText = "Fetching location...";
+
+            if (!navigator.geolocation) {
+                statusDiv.innerText = "Geolocation is not supported by your browser.";
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(async (position) => {
+                const latitude = position.coords.latitude;
+                const longitude = position.coords.longitude;
+                console.log(latitude)
+                console.log(longitude)
+                try {
+                    const response = await fetch('http://localhost:5000/api/location', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ latitude, longitude })
+                    });
+                    const result = await response.json();
+                    statusDiv.innerHTML = `
+                        Location saved successfully!<br>
+                        <strong>Latitude:</strong> ${latitude}<br>
+                        <strong>Longitude:</strong> ${longitude}<br>
+                        <a href="location-display.html">View Saved Location</a>
+                    `;
+                } catch (error) {
+                    statusDiv.innerText = "Error saving location. Please try again.";
+                    console.error(error);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
